@@ -1,43 +1,59 @@
 @Library("Shared") _
-pipeline{
+pipeline {
+    agent any
     
-    agent { label "vinod"}
-    
-    stages{
-        
-        stage("Hello"){
-            steps{
-                script{
-                    hello()
+    stages {
+        stage("hello"){
+            steps {
+                script {
+                    starter()
                 }
             }
         }
-        stage("Code"){
-            steps{
-               script{
-                clone("https://github.com/LondheShubham153/django-notes-app.git","main")
-               }
-                
-            }
-        }
-        stage("Build"){
-            steps{
-                script{
-                docker_build("notes-app","latest","trainwithshubham")
+        stage("Code") {
+            steps {
+                script {
+                    clone("https://github.com/pathu-1/django-notes-app.git", "main")
                 }
             }
         }
-        stage("Push to DockerHub"){
-            steps{
-                script{
-                    docker_push("notes-app","latest","trainwithshubham")
+        stage("Build") {
+            steps {
+                script {
+                    docker_build("notes_app", "latest", "pathuxx")
                 }
             }
         }
-        stage("Deploy"){
-            steps{
-                echo "This is deploying the code"
-                sh "docker compose down && docker compose up -d"
+        stage("Test") {
+            steps {
+                script {
+                    echo "Testing the code"
+                    // Add your actual testing commands here
+                }
+            }
+        }
+        stage("Pushing Code to Docker Hub") {
+            steps {
+                script {
+                    push_to_docker("notes-app", "latest", "pathuxx")
+                }
+            }
+        }
+        stage("Deploy") {
+            steps {
+                script {
+                    echo "Deploying code"
+                    sh "docker compose up -d"
+                }
+            }
+        }
+        // Optional Cleanup Stage
+        stage("Cleanup") {
+            steps {
+                script {
+                    echo "Cleaning up..."
+                    // Add Docker cleanup commands here
+                }
             }
         }
     }
