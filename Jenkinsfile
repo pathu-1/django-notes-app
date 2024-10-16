@@ -52,6 +52,7 @@ pipeline {
             steps {
                 script {
                     echo "Cleaning up..."
+                    sh "docker compose up -d"
                     // Add Docker cleanup commands here
                 }
             }
